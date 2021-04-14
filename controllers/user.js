@@ -1,5 +1,6 @@
 const ErrorResponse = require('../utils/errorHandler');
 const userModel = require('../models/users');
+const { JWT_EXPIRE } = require('../constants/constant');
 
 class User{
     static async register(req,res,next){
@@ -32,8 +33,22 @@ class User{
 
     static async signInUser(req,res,next){
         try{
-            console.log(req.body);
-            res.status(200).json({success: true, token: "Token"});
+            const {email,password} = req.body;
+            
+            // Checking if email and password are not empty ....
+            if(!email || !password){
+                next(new ErrorResponse("Invalid Credentials",404));
+            }
+
+            // Searching for user ...
+            const user = await userModel.findOne({email: email});
+            if(!user){
+                next(new ErrorResponse("User Not Found",404));
+            }
+
+            // Generating Token ...
+            const token = user.getSignedJwtToken();
+            res.status(200).json({success: true, token: token});
         }catch(err){
             console.log(err);
             next(new ErrorResponse("Invalid User Credentials"));
