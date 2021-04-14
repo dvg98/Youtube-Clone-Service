@@ -5,6 +5,7 @@ const connectDb = require('./config/dbConnect');
 const constants = require('./constants/constant');
 
 //Importing Routes File
+//All route files are present in route folder
 const user = require('./routes/user');
 
 // Connecting to DB and creating Express App
@@ -14,7 +15,7 @@ const app = express();
 // Middlewares
 app.use(express.json()); // express.json() => Getting JSON in request.body
 app.use(upload());       // upload() => For File Upload Purpose
-app.use(morgan('dev'));  // Morgans => To get Request Logs
+app.use(morgan('dev'));  // Morgans => used for getting logs for each request 
 
 // Mounting the routes ..
 app.use('/api/v1/user/',user);
